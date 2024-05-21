@@ -1,23 +1,14 @@
-const winston = require("winston");
-const chalk = require("chalk");
-const util = require("util");
-const { getCurrentLogLevel } = require("../utils/env-info");
+import winston from "winston";
+import chalk from "chalk";
+import util from "util";
+import { getLogLevel } from "../utils/env-info.js";
+import { colorCode } from "../constants/index.js";
 
 const { addColors, createLogger, format, transports } = winston;
 
-const colors = {
-    error: "red",
-    warn: "yellow",
-    info: "green",
-    http: "magenta",
-    verbose: "cyan",
-    debug: "blue",
-    silly: "pink",
-};
+addColors(colorCode);
 
-addColors(colors);
-
-const level = getCurrentLogLevel();
+const level = getLogLevel();
 
 const consoleLogFormat = format.printf(({ level, message, timestamp, stack }) => {
     const colorizedTimestamp = chalk.gray(timestamp);
@@ -34,7 +25,7 @@ const consoleLogFormat = format.printf(({ level, message, timestamp, stack }) =>
 });
 
 const fileLogFormat = format.printf(({ level, message, timestamp }) => {
-    const unColoredMessage = message.replace(/\x1B\[\d+m/g, '');
+    const unColoredMessage = message.replace(/\x1B\[\d+m/g, "");
     const formattedMessage = typeof unColoredMessage === "object" ? util.inspect(unColoredMessage) : unColoredMessage;
 
     return `${timestamp} ${level}: ${formattedMessage}`;
@@ -76,4 +67,4 @@ const options = {
 
 const logger = createLogger(options);
 
-module.exports = logger;
+export default logger;

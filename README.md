@@ -1,1 +1,1 @@
-# serverBoilerPlate
+# REST API Template
